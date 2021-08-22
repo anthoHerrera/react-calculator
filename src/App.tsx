@@ -5,59 +5,160 @@ import "./App.scss";
 const MAX_LENGTH = 21;
 const isOperator = /[x/+‑]/;
 const endsWithOperator = /[x+‑/]$/;
+const endsWithNegativeSign = /\d[x/+‑]{1}‑$/;
 
 type AppProps = {};
 
 type AppState = {
+    prevVal: string;
     currentValue: string;
-    result: string;
+    formula: string;
+    currentSign: string;
+    evaluated: boolean;
 };
 
 class App extends React.Component<AppProps, AppState> {
     constructor(props: AppProps) {
         super(props);
         this.state = {
-            currentValue: String.fromCharCode(160),
-            result: "0",
+            prevVal: "0",
+            currentValue: "0",
+            formula: String.fromCharCode(160),
+            currentSign: "pos",
+            evaluated: false,
         };
-        this.handleClick = this.handleClick.bind(this);
+        this.clear = this.clear.bind(this);
+        this.maxDigit = this.maxDigit.bind(this);
+        this.handleNumbers = this.handleNumbers.bind(this);
+        this.handleOperators = this.handleOperators.bind(this);
+        this.handleDecimal = this.handleDecimal.bind(this);
     }
 
-    handleClick = (text: string): void => {
-        if (isOperator.test(text)) {
-            this.setState({
-                currentValue: this.state.currentValue + text,
-                result: text,
-            });
-        } else if (!isOperator.test(text)) {
-            if (text !== "=" && text !== "." && text !== "AC") {
+    clear() {
+        this.setState({
+            prevVal: "0",
+            currentValue: "0",
+            formula: String.fromCharCode(160),
+            currentSign: "pos",
+            evaluated: false,
+        });
+    }
+
+    maxDigit() {
+        this.setState({
+            currentValue: "Max Digit Limit",
+            prevVal: this.state.currentValue,
+        });
+        setTimeout(
+            () => this.setState({ currentValue: this.state.prevVal }),
+            1000
+        );
+    }
+
+    handleNumbers(e: any): void {
+        if (!this.state.currentValue.includes("Limit")) {
+            const { currentValue, formula, evaluated } = this.state;
+            const number = e.target.value;
+            this.setState({ evaluated: false });
+            if (currentValue.length > MAX_LENGTH) {
+                this.maxDigit();
+            } else if (evaluated) {
                 this.setState({
-                    currentValue: this.state.currentValue + text,
-                    result: !isOperator.test(this.state.result)
-                        ? this.state.result.length === 1 &&
-                          this.state.result === "0"
-                            ? text
-                            : this.state.result + text
-                        : text,
+                    currentValue: number,
+                    formula: number !== "0" ? number : "",
                 });
-            }else if(text === "AC") {
+            } else {
                 this.setState({
-                    currentValue: String.fromCharCode(160),
-                    result: '0',
-                })
+                    currentValue:
+                        currentValue === "0" || isOperator.test(currentValue)
+                            ? number
+                            : currentValue + number,
+                    formula:
+                        currentValue === "0" && number === "0"
+                            ? formula === ""
+                                ? number
+                                : formula
+                            : /([^.0-9]0|^0)$/.test(formula)
+                            ? formula.slice(0, -1) + number
+                            : formula + number,
+                });
             }
         }
-    };
+    }
+
+    handleOperators(e: any): void {
+        if (!this.state.currentValue.includes("Limit")) {
+            const operator = e.target.value;
+            const { formula, prevVal, evaluated } = this.state;
+            this.setState({ currentValue: operator, evaluated: false });
+            if (evaluated) {
+                this.setState({ formula: prevVal + operator });
+            } else if (!endsWithOperator.test(formula)) {
+                this.setState({
+                    prevVal: formula,
+                    formula: formula + operator,
+                });
+            } else if (!endsWithNegativeSign.test(formula)) {
+                this.setState({
+                    formula:
+                        (endsWithNegativeSign.test(formula + operator)
+                            ? formula
+                            : prevVal) + operator,
+                });
+            } else if (operator !== "‑") {
+                this.setState({
+                    formula: prevVal + operator,
+                });
+            }
+        }
+    }
+
+    handleDecimal(e: any): void {
+        if (this.state.evaluated === true) {
+            this.setState({
+                currentValue: "0.",
+                formula: "0.",
+                evaluated: false,
+            });
+        } else if (
+            !this.state.currentValue.includes(".") &&
+            !this.state.currentValue.includes("Limit")
+        ) {
+            this.setState({ evaluated: false });
+            if (this.state.currentValue.length > 21) {
+                this.maxDigit();
+            } else if (
+                endsWithOperator.test(this.state.formula) ||
+                (this.state.currentValue === "0" && this.state.formula === "")
+            ) {
+                this.setState({
+                    currentValue: "0.",
+                    formula: this.state.formula + "0.",
+                });
+            } else {
+                this.setState({
+                    currentValue:
+                        this.state.formula.match(/(-?\d+\.?\d*)$/)![0] + ".",
+                    formula: this.state.formula + ".",
+                });
+            }
+        }
+    }
 
     render() {
         return (
             <div id="app">
                 <div className="calculator">
-                    <div className="operation">{this.state.currentValue}</div>
+                    <div className="operation">{this.state.formula}</div>
                     <div className="result" id="display">
-                        {this.state.result}
+                        {this.state.currentValue}
                     </div>
-                    <Buttons updateDisplay={this.handleClick} />
+                    <Buttons
+                        numbers={this.handleNumbers}
+                        clear={this.clear}
+                        operators={this.handleOperators}
+                        decimal={this.handleDecimal}
+                    />
                 </div>
             </div>
         );

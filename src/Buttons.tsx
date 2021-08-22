@@ -1,67 +1,65 @@
 import React from "react";
 
 type ButtonsProps = {
-    updateDisplay: (text: string) => void;
+    clear: (e: any) => void;
+    numbers: (e: any) => void;
+    operators: (e: any) => void;
+    decimal: (e: any) => void;
 };
 
 function Buttons(props: ButtonsProps) {
-    function onClickHandler(e: any): void {
-        e.preventDefault();
-        props.updateDisplay(e.target.value);
-    }
-
     return (
         <div>
             <div id="buttons">
-                <button id="clear" value="AC" onClick={onClickHandler}>
+                <button id="clear" value="AC" onClick={props.clear}>
                     AC
                 </button>
-                <button id="divide" value="/" onClick={onClickHandler}>
+                <button id="divide" value="/" onClick={props.operators}>
                     /
                 </button>
-                <button id="multiply" value="x" onClick={onClickHandler}>
+                <button id="multiply" value="x" onClick={props.operators}>
                     X
                 </button>
-                <button id="seven" value="7" onClick={onClickHandler}>
+                <button id="seven" value="7" onClick={props.numbers}>
                     7
                 </button>
-                <button id="eight" value="8" onClick={onClickHandler}>
+                <button id="eight" value="8" onClick={props.numbers}>
                     8
                 </button>
-                <button id="nine" value="9" onClick={onClickHandler}>
+                <button id="nine" value="9" onClick={props.numbers}>
                     9
                 </button>
-                <button id="subtract" value="-" onClick={onClickHandler}>
+                <button id="subtract" value="-" onClick={props.operators}>
                     -
                 </button>
-                <button id="four" value="4" onClick={onClickHandler}>
+                <button id="four" value="4" onClick={props.numbers}>
                     4
                 </button>
-                <button id="five" value="5" onClick={onClickHandler}>
+                <button id="five" value="5" onClick={props.numbers}>
                     5
                 </button>
-                <button id="six" value="6" onClick={onClickHandler}>
+                <button id="six" value="6" onClick={props.numbers}>
                     6
                 </button>
-                <button id="add" value="+" onClick={onClickHandler}>
+                <button id="add" value="+" onClick={props.operators}>
                     +
                 </button>
-                <button id="one" value="1" onClick={onClickHandler}>
+                <button id="one" value="1" onClick={props.numbers}>
                     1
                 </button>
-                <button id="two" value="2" onClick={onClickHandler}>
+                <button id="two" value="2" onClick={props.numbers}>
                     2
                 </button>
-                <button id="three" value="3" onClick={onClickHandler}>
+                <button id="three" value="3" onClick={props.numbers}>
                     3
                 </button>
-                <button id="zero" value="0" onClick={onClickHandler}>
+                <button id="zero" value="0" onClick={props.numbers}>
                     0
                 </button>
-                <button id="decimal" value="." onClick={onClickHandler}>
+                <button id="decimal" value="." onClick={props.decimal}>
                     .
                 </button>
-                <button id="equals" value="=" onClick={onClickHandler}>
+                <button id="equals" value="=" onClick={props.numbers}>
                     =
                 </button>
             </div>
