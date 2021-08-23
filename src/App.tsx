@@ -32,6 +32,7 @@ class App extends React.Component<AppProps, AppState> {
         this.handleNumbers = this.handleNumbers.bind(this);
         this.handleOperators = this.handleOperators.bind(this);
         this.handleDecimal = this.handleDecimal.bind(this);
+        this.handleEvaluate = this.handleEvaluate.bind(this);
     }
 
     clear() {
@@ -113,7 +114,7 @@ class App extends React.Component<AppProps, AppState> {
         }
     }
 
-    handleDecimal(e: any): void {
+    handleDecimal(): void {
         if (this.state.evaluated === true) {
             this.setState({
                 currentValue: "0.",
@@ -145,6 +146,35 @@ class App extends React.Component<AppProps, AppState> {
         }
     }
 
+    handleEvaluate() {
+        if (!this.state.currentValue.includes("Limit")) {
+            let expression = this.state.formula;
+            while (endsWithOperator.test(expression)) {
+                expression = expression.slice(0, -1);
+            }
+            expression = expression
+                .replace(/x/g, "*")
+                .replace(/‑/g, "-")
+                .replace("--", "+0+0+0+0+0+0+");
+            let answer =
+                Math.round(1000000000000 * eval(expression)) / 1000000000000;
+            this.setState({
+                currentValue: answer.toString(),
+                formula:
+                    expression
+                        .replace(/\*/g, "⋅")
+                        .replace(/-/g, "‑")
+                        .replace("+0+0+0+0+0+0+", "‑-")
+                        .replace(/(x|\/|\+)‑/, "$1-")
+                        .replace(/^‑/, "-") +
+                    "=" +
+                    answer,
+                prevVal: answer.toString(),
+                evaluated: true,
+            });
+        }
+    }
+
     render() {
         return (
             <div id="app">
@@ -158,6 +188,7 @@ class App extends React.Component<AppProps, AppState> {
                         clear={this.clear}
                         operators={this.handleOperators}
                         decimal={this.handleDecimal}
+                        equals={this.handleEvaluate}
                     />
                 </div>
             </div>

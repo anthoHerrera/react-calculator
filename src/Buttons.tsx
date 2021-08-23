@@ -4,7 +4,8 @@ type ButtonsProps = {
     clear: (e: any) => void;
     numbers: (e: any) => void;
     operators: (e: any) => void;
-    decimal: (e: any) => void;
+    decimal: () => void;
+    equals: () => void;
 };
 
 function Buttons(props: ButtonsProps) {
@@ -59,7 +60,7 @@ function Buttons(props: ButtonsProps) {
                 <button id="decimal" value="." onClick={props.decimal}>
                     .
                 </button>
-                <button id="equals" value="=" onClick={props.numbers}>
+                <button id="equals" value="=" onClick={props.equals}>
                     =
                 </button>
             </div>
