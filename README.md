@@ -1,4 +1,4 @@
-# Build a JavaScript Calculator
+# Build a JavaScript/React Calculator
 
 **Objective:** Build an app that is functionally similar to this: [https://codepen.io/freeCodeCamp/full/wgGVVX.](https://codepen.io/freeCodeCamp/full/wgGVVX)
 
