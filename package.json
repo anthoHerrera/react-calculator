@@ -1,9 +1,12 @@
 {
+  "homepage": "http://anthoHerrera.github.io/react-calculator",
   "name": "react-calculator",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "webpack serve --port 3000",
     "build": "NODE_ENV=production webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,6 +18,7 @@
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
     "css-loader": "^6.2.0",
+    "gh-pages": "^3.2.3",
     "html-webpack-plugin": "^5.3.2",
     "mini-css-extract-plugin": "^2.2.0",
     "sass": "^1.38.0",
